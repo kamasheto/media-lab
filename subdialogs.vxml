@@ -18,7 +18,7 @@
     ]]]>
   </grammar>
     <prompt> 
-      <value expr="confirm_prompt"/> 
+      <value expr="confirm_prompt"/>, Press 1 or say yes for yes, Press 2 or say no for no.
     </prompt>
     
     <filled namelist="field_confirm"> 

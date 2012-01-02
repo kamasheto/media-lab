@@ -3,28 +3,33 @@
 	
 	<!-- The Javascript functions to calculate the prices and so on -->
 	<script>
+		<![CDATA[ 
 		cart = new Array();
-		function addToArray(name, additions, ingredients_to_remove){
+		function addToCart(name, additions, ingredients_to_remove){
 			var orderItem = new Object();
 			orderItem.name = name;
 			orderItem.additions = additions;
 			orderItem.remove = ingredients_to_remove;
 			orderItem.price = function(){
 				var finalPrice = 0;
-				if(this.name == 'cheese burger'){
+				if(this.name.indexOf('cheese burger') != -1){
 					finalPrice = 10;
 				}
-				else if(this.name == 'chicken pane'){
+				else if(this.name.indexOf('chicken pane') != -1 ){
 					finalPrice = 8;
 				}
-				else if(this.name == 'hot dog'){
+				else if(this.name.indexOf('hot dog') != -1){
 					finalPrice = 6;
 				}
-				num_additions = (this.additions.split(" ").length-1) * 1.5; //1.5 per addition
+				if(this.additions.split(" ").length-1 < 0)
+					num_additions = 0;
+				else
+					num_additions = (this.additions.split(" ").length-1) * 1.5; //1.5 per addition
 				finalPrice += num_additions;
 				return finalPrice;
 			}
 			cart.push(orderItem);
+			return orderItem.price();
 		}
 		
 		function orderPrice(){
@@ -34,6 +39,11 @@
 			}
 			return temp;
 		}
+		
+		function getCart(){
+			return cart;
+		}
+		]]>
 	</script>
 	
 	<!-- General rules, if no match or no input these will be spoken -->
@@ -254,12 +264,37 @@
 			<else/>
 				<assign name="document.typeOfSandwich" expr="'sandwich'" />
 			</if>
-			<prompt>This will be a <value expr="document.sandwichName"/> <value expr="document.typeOfSandwich"/> with extra <value expr="document.additions"/> and no <value expr="document.removals"/>.  </prompt>
+			<prompt>This will be a <value expr="document.sandwichName"/> <value expr="document.typeOfSandwich"/> with extra <value expr="document.additions"/> and no <value expr="document.removals"/>. </prompt>
 		</block>
 		
-		
 		<!-- Add the entire sandwich order to the array in javascript -->
+		<block>
+			<prompt>Added to cart. </prompt>
+			<var name="added" expr="addToCart(document.sandwichName+','+document.typeOfSandwich, 'document.additions', 'document.removals')"/>
+			<prompt>The price will be: <value expr="added" /> Egyptian pounds.</prompt>
+			<prompt>Now add a new item. </prompt>
+			<clear namelist="document.sandwichName document.typeOfSandwich document.additions remove_ingredients extras combo" />
+		</block>
 		
+		<subdialog name="final_check" src="subdialogs.vxml#r_u_sure">
+			<param name="confirm_prompt" expr="'Do you want to add any more items?'" />
+			<filled>
+				<if cond="final_check.response == true">
+					<goto next="#food_menu" />
+				<else/>
+					<goto nextitem="final_price" />
+				</if>
+			</filled>
+		</subdialog>
+		
+		<block name="final_price">
+			<var name="totalPrice" expr="orderPrice" />
+			<prompt>
+				The total price for your order will be <value expr="totalPrice" />
+			</prompt>
+		</block>
+				
+				
 	</form>
 	
   
