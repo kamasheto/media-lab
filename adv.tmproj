@@ -10,13 +10,15 @@
 			<key>filename</key>
 			<string>advlab.vxml</string>
 			<key>lastUsed</key>
-			<date>2012-01-02T17:16:17Z</date>
+			<date>2012-01-02T19:38:54Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>subdialogs.vxml</string>
 			<key>lastUsed</key>
-			<date>2012-01-02T16:56:03Z</date>
+			<date>2012-01-02T19:38:54Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -28,23 +30,39 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>15</integer>
+				<integer>12</integer>
 				<key>line</key>
-				<integer>106</integer>
+				<integer>128</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>91</integer>
+			<integer>105</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>128</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>12</integer>
+				<key>line</key>
+				<integer>128</integer>
+			</dict>
 		</dict>
 		<key>subdialogs.vxml</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>18</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>8</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -60,6 +78,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{210, 4}, {1070, 774}}</string>
+	<string>{{222, 17}, {1088, 857}}</string>
 </dict>
 </plist>
