@@ -47,7 +47,7 @@
 		</prompt>
    
 		<choice next="#food_menu" dtmf="1">
-		  choice one
+		  For a new order, 
 		</choice>
 		<choice next="#supportForm"	 dtmf="2">
 		  For customer support
@@ -101,30 +101,19 @@
 	<!-- The customer is ordering a sandwich, we have to ask whether if he wants additions or stuff to be removed -->
 	<form id="sandwichForm" scope="dialog">
 		<!-- Does the user wants it a combo -->
-		<field name="confirm" slot="confirm">
-			<grammar type="text/gsl">
-			    <![CDATA[[
-			        [dtmf-1] [yes]    {  <confirm  "yes"> }
-			        [dtmf-2] [no]    {  <confirm  "no">  }
-			    ]]]>
-			  </grammar>
-			<prompt bargein = "false">
-				Do you want to make that a combo ?
-			</prompt>
-		</field>
+		<subdialog name="combo" src="subdialogs.vxml#r_u_sure">
+			<param name="confirm_prompt" expr="'Do you want to make that a combo?'"/>
+		</subdialog>
 		
-		<filled namelist="confirm" mode="all">
-			<if cond="confirm == 'yes'">
+		<block namelist="combo.response">
+			<if cond="combo.response == true">
 				<prompt>
-					Combo ya basha
+					This will be a combo.
 				</prompt>
-			<elseif cond="confirm == 'no'">
-				<prompt>
-					MESH combo
-				</prompt>
-			</elseif>
+			<else/>
+				<prompt>No it will not be a combo</prompt>
 			</if>
-		</filled>
+		</block>
 		
 		<!-- Does the user want any additions to his sandwich? -->
 		

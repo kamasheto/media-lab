@@ -10,16 +10,22 @@
   <var name="confirm_prompt"/> 
   <var name="response"/> 
 
-  <field name="field_confirm" type="boolean"> 
+  <field name="field_confirm"> 
+	<grammar type="text/gsl">
+    <![CDATA[[
+        [dtmf-1] [yes]    {  <confirm  "yes"> }
+        [dtmf-2] [no]    {  <confirm  "no">  }
+    ]]]>
+  </grammar>
     <prompt> 
       <value expr="confirm_prompt"/> 
-    </prompt> 
+    </prompt>
     
-    <filled> 
-      <if cond="field_confirm == true"> 
-        <assign name="response" expr="'yes'"/> 
+    <filled namelist="field_confirm"> 
+      <if cond="field_confirm == '1'"> 
+        <assign name="response" expr="true"/> 
       <else/> 
-        <assign name="response" expr="'no'"/> 
+        <assign name="response" expr="false"/> 
       </if> 
         <return namelist="response"/> 
     </filled> 
