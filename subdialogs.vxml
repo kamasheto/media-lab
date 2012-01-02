@@ -13,8 +13,8 @@
   <field name="field_confirm"> 
 	<grammar type="text/gsl">
     <![CDATA[[
-        [dtmf-1] [yes]    {  <confirm  "yes"> }
-        [dtmf-2] [no]    {  <confirm  "no">  }
+        [dtmf-1] [yes] {<field_confirm "1">}
+        [dtmf-2] [no] {<field_confirm "2">}
     ]]]>
   </grammar>
     <prompt> 
@@ -22,7 +22,7 @@
     </prompt>
     
     <filled namelist="field_confirm"> 
-      <if cond="field_confirm == '1'"> 
+      <if cond="field_confirm == '1'">
         <assign name="response" expr="true"/> 
       <else/> 
         <assign name="response" expr="false"/> 

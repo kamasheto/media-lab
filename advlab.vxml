@@ -105,6 +105,7 @@
 			<param name="confirm_prompt" expr="'Do you want to make that a combo?'"/>
 		</subdialog>
 		
+		<!-- combo.response: The subdialog got a name "combo" and it returns a var called response, to access it we write combo.response -->
 		<block namelist="combo.response">
 			<if cond="combo.response == true">
 				<prompt>
@@ -116,6 +117,7 @@
 		</block>
 		
 		<!-- Does the user want any additions to his sandwich? -->
+		
 		
 		<!-- Does the user want to remove any of the ingredients? -->
 		
