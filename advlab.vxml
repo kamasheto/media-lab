@@ -106,15 +106,17 @@
 		</subdialog>
 		
 		<!-- combo.response: The subdialog got a name "combo" and it returns a var called response, to access it we write combo.response -->
-		<block namelist="combo.response">
-			<if cond="combo.response == true">
-				<prompt>
-					This will be a combo.
-				</prompt>
-			<else/>
-				<prompt>No it will not be a combo</prompt>
-			</if>
-		</block>
+		<subdialog name="combo_confirm" src="subdialogs.vxml#r_u_sure" namelist="combo.response">
+			<param name="confirm_prompt" expr="'Are you sure?'" />
+			<filled>
+				<if cond="combo_confirm.response == false">
+				<!-- If the user is NOT sure, we redirect him to the combo question and clear the current field 3ashan yerga3laha tany -->
+					<clear namelist="combo_confirm" />
+					<goto nextitem="combo" />
+				</if>
+			</filled>
+		</subdialog>
+		
 		
 		<!-- Does the user want any additions to his sandwich? -->
 		
