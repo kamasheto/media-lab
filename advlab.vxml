@@ -274,6 +274,7 @@
 			<prompt>The price will be: <value expr="added" /> Egyptian pounds.</prompt>
 			<prompt>Now add a new item. </prompt>
 			<clear namelist="document.sandwichName document.typeOfSandwich document.additions remove_ingredients extras combo" />
+			<goto nextitem="final_check" />
 		</block>
 		
 		<subdialog name="final_check" src="subdialogs.vxml#r_u_sure">
