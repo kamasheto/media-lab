@@ -35,10 +35,10 @@
 	</catch>
 
 	<!-- Initially, we ask the user whether he would like to place a customer support ticket or to place a new order -->
-	<menu id="services_menu">
-		<property name="inputmodes" value="dtmf"/>
+	<!-- <menu id="services_menu">
+		<property name="inputmodes" value="dtmf voice"/>
 		<prompt bargein="false">
-		  Welcome.
+		  Welcome to Burger King GUC branch.
 		</prompt>
 		<prompt>
 			<enumerate>
@@ -52,7 +52,32 @@
 		<choice next="#supportForm"	 dtmf="2">
 		  For customer support
 		</choice>
-	</menu>
+	</menu> -->
+	<form id = "services_menu">
+		<field name = "service_choice">
+			<!-- Define our grammar -->
+		      <grammar type="text/gsl">
+		      <![CDATA[
+		        ;Match one of the enclosed terms
+		        [
+				dtmf-1 dtmf-2 order service
+		        ]
+		      ]]>
+		      </grammar>
+			Welcome to Burger King GUC Branch. Please choose one of the following options, to make an order, Press 1, to contact a service 		representative, Press 2.							
+		</field>
+		<filled namelist="service_choice">
+			<if cond="service_choice == 'order' || service_choice == '1'">
+				<goto next = '#food_menu'/>					
+			<elseif cond="service_choice == 'service' || service_choice == '2'"/>
+				<goto next = '#supportForm'/>
+			<else/>
+				<throw event = "nomatch"/>
+				<reprompt/>
+			</if>
+		</filled>
+	</form>
+	
 	
 	<!-- In case of food ordering, What does the user want? This is like food category -->
 	<menu id="food_menu">
