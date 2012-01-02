@@ -3,8 +3,36 @@
 	
 	<!-- The Javascript functions to calculate the prices and so on -->
 	<script>
-		function galal(){
-			return "gamed kinda";
+		cart = new Array();
+		function addToArray(name, additions, ingredients_to_remove){
+			var orderItem = new Object();
+			orderItem.name = name;
+			orderItem.additions = additions;
+			orderItem.remove = ingredients_to_remove;
+			orderItem.price = function(){
+				var finalPrice = 0;
+				if(this.name == 'cheese burger'){
+					finalPrice = 10;
+				}
+				else if(this.name == 'chicken pane'){
+					finalPrice = 8;
+				}
+				else if(this.name == 'hot dog'){
+					finalPrice = 6;
+				}
+				num_additions = (this.additions.split(" ").length-1) * 1.5; //1.5 per addition
+				finalPrice += num_additions;
+				return finalPrice;
+			}
+			cart.push(orderItem);
+		}
+		
+		function orderPrice(){
+			var temp = 0;
+			for(var i in cart){
+				temp += i.price();
+			}
+			return temp;
 		}
 	</script>
 	
@@ -108,6 +136,7 @@
 	<!-- The customer is ordering a sandwich, we have to ask whether if he wants additions or stuff to be removed -->
 	<form id="sandwichForm" scope="dialog">
 		<assign name="document.additions" expr="' '" />
+		<assign name="document.removals" expr="' '" />
 		
 		<!-- Does the user wants it a combo -->
 		<subdialog name="combo" src="subdialogs.vxml#r_u_sure">
@@ -156,7 +185,7 @@
 			
 			<filled>
 				<if cond="extras == 'n'">
-					<goto nextitem="list_additions" />
+					<goto nextitem="remove_ingredients" />
 				</if>
 			</filled>
 		</field>
@@ -177,11 +206,57 @@
 			</filled>
 		</subdialog>
 		
-		<block name="list_additions" namelist="document.additions">
-			<prompt>Additions are: <value expr="document.additions" /></prompt>
+		<!-- Does the user want to remove any of the ingredients? -->
+		<field name="remove_ingredients">
+			<prompt>Do you want to remove any of the ingredients?</prompt>
+			<prompt> 
+				<enumerate>
+					To remove <value expr="_prompt"/> press <value expr="_dtmf"/> or say <value expr="_prompt"/>, 
+				</enumerate>
+			</prompt>
+			<option value="onions" dtmf="1"> 
+		        onions
+		    </option> 
+		    <option value="cheese" dtmf="2"> 
+		        cheese 
+		    </option> 
+			<option value="pickles" dtmf="3"> 
+		        pickles
+		    </option>
+			<option value="mushrooms" dtmf="4"> 
+		        mushrooms
+		    </option>
+
+			<option value="n" dtmf="5">
+				nothing more
+			</option>
+		</field>
+
+		<!-- This will ask the user whether he want to add that last ingredient -->
+		<subdialog name="remove_ingredient_confirm" src="subdialogs.vxml#r_u_sure" namelist="remove_ingredients document.removals" cond="remove_ingredients != 'n'">
+			<param name="confirm_prompt" expr="'Are you sure you want to remove ' + remove_ingredients + '?'" />
+			<filled namelist="document.removals">
+				<if cond="remove_ingredient_confirm.response == false">
+					<clear namelist="remove_ingredient_confirm" />
+					<goto nextitem="remove_ingredients" />
+				<elseif cond="remove_ingredient_confirm.response == true"/>
+					<prompt>Removed <value expr="remove_ingredients" /> </prompt>
+					<assign name="document.removals" expr="''+ document.removals + ' ' + remove_ingredients" />
+					<clear namelist="remove_ingredient_confirm" />
+					<goto nextitem="remove_ingredients" />
+				</if>
+			</filled>
+		</subdialog>
+		
+		<block>
+			<if cond="document.orderCombo">
+				<assign name="document.typeOfSandwich" expr="'combo'" />
+			<else/>
+				<assign name="document.typeOfSandwich" expr="'sandwich'" />
+			</if>
+			<prompt>This will be a <value expr="document.sandwichName"/> <value expr="document.typeOfSandwich"/> with extra <value expr="document.additions"/> and no <value expr="document.removals"/>.  </prompt>
 		</block>
 		
-		<!-- Does the user want to remove any of the ingredients? -->
 		
 		<!-- Add the entire sandwich order to the array in javascript -->
 		
