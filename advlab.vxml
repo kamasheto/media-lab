@@ -35,24 +35,6 @@
 	</catch>
 
 	<!-- Initially, we ask the user whether he would like to place a customer support ticket or to place a new order -->
-	<!-- <menu id="services_menu">
-		<property name="inputmodes" value="dtmf voice"/>
-		<prompt bargein="false">
-		  Welcome to Burger King GUC branch.
-		</prompt>
-		<prompt>
-			<enumerate>
-				<value expr="_prompt"/> press <value expr="_dtmf"/>, 
-			</enumerate>
-		</prompt>
-   
-		<choice next="#food_menu" dtmf="1">
-		  For a new order, 
-		</choice>
-		<choice next="#supportForm"	 dtmf="2">
-		  For customer support
-		</choice>
-	</menu> -->
 	<form id = "services_menu">
 		<field name = "service_choice">
 			<!-- Define our grammar -->
@@ -64,7 +46,7 @@
 		        ]
 		      ]]>
 		      </grammar>
-			Welcome to Burger King GUC Branch. Please choose one of the following options, to make an order, Press 1, to contact a service 		representative, Press 2.							
+			Hello							
 		</field>
 		<filled namelist="service_choice">
 			<if cond="service_choice == 'order' || service_choice == '1'">
@@ -125,6 +107,8 @@
   	
 	<!-- The customer is ordering a sandwich, we have to ask whether if he wants additions or stuff to be removed -->
 	<form id="sandwichForm" scope="dialog">
+		<assign name="document.additions" expr="' '" />
+		
 		<!-- Does the user wants it a combo -->
 		<subdialog name="combo" src="subdialogs.vxml#r_u_sure">
 			<param name="confirm_prompt" expr="'Do you want to make that a combo?'"/>
@@ -138,13 +122,64 @@
 				<!-- If the user is NOT sure, we redirect him to the combo question and clear the current field 3ashan yerga3laha tany -->
 					<clear namelist="combo_confirm" />
 					<goto nextitem="combo" />
+				<else/>
+					<assign name="document.orderCombo" expr="combo.response" />
 				</if>
 			</filled>
 		</subdialog>
 		
 		
 		<!-- Does the user want any additions to his sandwich? -->
+		<field name="extras">
+			<prompt>Do you want any additions?</prompt>
+			<prompt> 
+				<enumerate>
+					To add <value expr="_prompt"/> press <value expr="_dtmf"/> or say <value expr="_prompt"/>, 
+				</enumerate>
+			</prompt>
+			<option value="onions" dtmf="1"> 
+		        onions
+		    </option> 
+		    <option value="cheese" dtmf="2"> 
+		        cheese 
+		    </option> 
+			<option value="pickles" dtmf="3"> 
+		        pickles
+		    </option>
+			<option value="mushrooms" dtmf="4"> 
+		        mushrooms
+		    </option>
 		
+			<option value="n" dtmf="5">
+				nothing more
+			</option>
+			
+			<filled>
+				<if cond="extras == 'n'">
+					<goto nextitem="list_additions" />
+				</if>
+			</filled>
+		</field>
+		
+		<!-- This will ask the user whether he want to add that last ingredient -->
+		<subdialog name="extra_ingredient_confirm" src="subdialogs.vxml#r_u_sure" namelist="extras document.additions" cond="extras != 'n'">
+			<param name="confirm_prompt" expr="'Are you sure you want to add ' + extras + '?'" />
+			<filled namelist="document.additions">
+				<if cond="extra_ingredient_confirm.response == false">
+					<clear namelist="extra_ingredient_confirm" />
+					<goto nextitem="extras" />
+				<elseif cond="extra_ingredient_confirm.response == true"/>
+					<prompt>Added <value expr="extras" /> </prompt>
+					<assign name="document.additions" expr="''+ document.additions + ' ' + extras" />
+					<clear namelist="extra_ingredient_confirm" />
+					<goto nextitem="extras" />
+				</if>
+			</filled>
+		</subdialog>
+		
+		<block name="list_additions" namelist="document.additions">
+			<prompt>Additions are: <value expr="document.additions" /></prompt>
+		</block>
 		
 		<!-- Does the user want to remove any of the ingredients? -->
 		
