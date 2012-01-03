@@ -277,7 +277,7 @@
 		<!-- Add the entire sandwich order to the array in javascript -->
 		<block>
 			<prompt>Added to cart. </prompt>
-			<var name="added" expr="addToCart(document.sandwichName+','+document.typeOfSandwich, 'document.additions', 'document.removals')"/>
+			<var name="added" expr="addToCart(document.sandwichName+','+document.typeOfSandwich, document.additions, document.removals)"/>
 			<prompt>The price will be: <value expr="added" /> Egyptian pounds.</prompt>
 			<prompt>Now add a new item. </prompt>
 			<clear namelist="document.sandwichName document.typeOfSandwich document.additions remove_ingredients extras combo" />
