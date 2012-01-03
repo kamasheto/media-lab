@@ -110,16 +110,16 @@
 		      <![CDATA[
 		        ;Match one of the enclosed terms
 		        [
-				dtmf-1 dtmf-2 order service
+				dtmf-1 dtmf-2 order service (place an order) (make an order) (place a customer support ticket) 
 		        ]
 		      ]]>
 		      </grammar>
 			Hello							
 		</field>
 		<filled namelist="service_choice">
-			<if cond="service_choice == 'order' || service_choice == '1'">
+			<if cond="service_choice == 'order' || service_choice == 'place an order' || service_choice == 'make an order' || service_choice == '1'">
 				<goto next = '#food_menu'/>					
-			<elseif cond="service_choice == 'service' || service_choice == '2'"/>
+			<elseif cond="service_choice == 'service' || service_choice == 'place a customer support ticket' || service_choice == '2'"/>
 				<goto next = '#supportForm'/>
 			<else/>
 				<throw event = "nomatch"/>
@@ -128,50 +128,84 @@
 		</filled>
 	</form>
 	
+	<!-- In case of support form, record what the user is saying -->
+	<form id = "supportForm">
+	  <record name="R_1" beep="true" dtmfterm="true"> 
+	    <prompt> 
+	      Please start recording your complain after the beep. 
+	    </prompt> 
+	    <prompt> 
+	      after you are finished, you may press any key to indicate that you are done recording. 
+	    </prompt> 
+
+	    <filled> 
+	      <log expr="R_1$.duration"/> 
+	      <log expr="R_1$.termchar"/> 
+	      <log expr="R_1$.size"/> 
+
+	      <prompt> your recording was <value expr="R_1"/> </prompt> 
+		  <prompt> One of our customer care representative will contact you shortly, Thank you</prompt>
+	    </filled> 
+
+	  </record> 
+	  
+	</form>
 	
 	<!-- In case of food ordering, What does the user want? This is like food category -->
-	<menu id="food_menu">
-		<property name="inputmodes" value="dtmf"/>
-		<prompt bargein="false">
-		  Welcome.
-		</prompt>
-		<prompt>
-			<enumerate>
-				To order a <value expr="_prompt"/> press <value expr="_dtmf"/>, 
-			</enumerate>
-		</prompt>
-		<choice next="#sandwiches_menu" dtmf="1">
-		  Sandwich
-		</choice>
-		<choice next="#supportForm"	 dtmf="2">
-		  Salad
-		</choice>
-		<choice next="#supportForm"	 dtmf="3">
-		  side item
-		</choice>
-	</menu>
+	<form id = "food_menu">
+		<field name = "food_choice">
+			<!-- Define our grammar -->
+		      <grammar type="text/gsl">
+		      <![CDATA[
+		        ;Match one of the enclosed terms
+		        [
+				dtmf-1 dtmf-2 dtmf-3 sandwich salad (side item) (order a sandwich) (order a salad) (order a side item)
+		        ]
+		      ]]>
+		      </grammar>
+			To order a sandwich say sandwich or press 1, to order a salad, say salad or press 2, to order a side item, say side item or press 3						
+		</field>
+		<filled namelist="food_choice">
+			<if cond="food_choice == 'sandwich' || food_choice == 'order a sandwich' || food_choice == '1'">
+				<goto next = '#sandwiches_menu'/>					
+			<elseif cond="food_choice == 'salad' || food_choice == 'order a salad' || food_choice == '2'"/>
+				<goto next = '#supportForm'/>
+			<elseif cond="food_choice == 'side item' || food_choice == 'order a side item' || food_choice == '3'"/>
+				<goto next = '#supportForm'/>
+			<else/>
+				<throw event = "nomatch"/>
+				<reprompt/>
+			</if>
+		</filled>
+	</form>
 	
 	<!-- Menu of available sandwiches -->
-	<menu id="sandwiches_menu">
-		<property name="inputmodes" value="dtmf"/>
-		<prompt bargein="false">
-		  Which sandwich do you want?
-		</prompt>
-		<prompt>
-			<enumerate>
-				To order a <value expr="_prompt"/> press <value expr="_dtmf"/>, 
-			</enumerate>
-		</prompt>
-		<choice event="cheese_burger" dtmf="1">
-		  	Cheese burger
-		</choice>
-		<choice event="chicken_pane" dtmf="2">
-		 	Chicken Panee
-		</choice>
-		<choice event="hot_dog" dtmf="3">
-			Hot dog
-		</choice>
-	</menu>
+	<form id = "sandwiches_menu">
+		<field name = "sandwiches_choice">
+			<!-- Define our grammar -->
+		      <grammar type="text/gsl">
+		      <![CDATA[
+		        ;Match one of the enclosed terms
+		        [
+				dtmf-1 dtmf-2 dtmf-3 (cheese burger) (chicken panee) (hot dog) (order a cheese burger) (order a chicken panee) (order a hot dog)
+		        ]
+		      ]]>
+		      </grammar>
+			Which sandwich do you want ? There is cheese burger, chicken panee and hot dog.
+		</field>
+		<filled namelist="sandwiches_choice">
+			<if cond="sandwiches_choice == 'cheese burger' || sandwiches_choice == 'order a cheese burger' || sandwiches_choice == '1'">
+				<throw event = "cheese_burger"/>
+			<elseif cond="sandwiches_choice == 'chicken panee' || sandwiches_choice == 'order a chicken panee' || sandwiches_choice == '2'"/>
+				<throw event = "chicken_pane"/>
+			<elseif cond="sandwiches_choice == 'hot dog' || sandwiches_choice == 'order a hot dog' || sandwiches_choice == '3'"/>
+				<throw event = "hot_dog"/>
+			<else/>
+				<throw event = "nomatch"/>
+				<reprompt/>
+			</if>
+		</filled>
+	</form>
   	
 	<!-- The customer is ordering a sandwich, we have to ask whether if he wants additions or stuff to be removed -->
 	<form id="sandwichForm" scope="dialog">
