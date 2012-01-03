@@ -21,7 +21,7 @@
 				else if(this.name.indexOf('hot dog') != -1){
 					finalPrice = 6;
 				}
-				if(this.additions.split(" ").length-1 < 0){
+				if(this.additions.split(" ").length-1 < 0 || this.additions.indexOf('nothing') != -1){
 					num_additions = 0;
 				}
 				else{
@@ -48,6 +48,7 @@
 		}
 		
 		function getCart(){
+			var totalOrder = "Your order consists of"
 			return cart;
 		}
 		]]>
