@@ -5,6 +5,8 @@
 	<script>
 		<![CDATA[ 
 		cart = new Array();
+		item_to_get = 0;
+		removed_sth = false;
 		function addToCart(name, additions, ingredients_to_remove){
 			var orderItem = new Object();
 			orderItem.name = name;
@@ -53,6 +55,23 @@
 				totalOrder += " A "+ cart[i].name.replace(",", " ") + "with " + cart[i].additions + "and " + cart[i].remove + " with price " + cart[i].price() + ",";
 			}
 			return totalOrder;
+		}
+		
+		function getCartItem(){
+			if(item_to_get >= cart.length)
+				return 'none';
+			var res = " A "+ cart[item_to_get].name.replace(",", " ") + "with " + cart[item_to_get].additions + "and " + cart[item_to_get].remove + " with price " + cart[item_to_get].price() + ",";
+			item_to_get++;
+			return res;
+		}
+		
+		function removeItem(){
+			cart.splice(item_to_get, 1);
+			item_to_get--;
+		}
+		
+		function get_cart_length(){
+			return cart.length;
 		}
 		]]>
 	</script>
@@ -286,8 +305,23 @@
 			<prompt>This will be a <value expr="document.sandwichName"/> <value expr="document.typeOfSandwich"/> with <value expr="document.additions"/> and <value expr="document.removals"/>. </prompt>
 		</block>
 		
+		<subdialog name="b4_add" src="subdialogs.vxml#r_u_sure">
+			<param name="confirm_prompt" expr="'Is that correct? If not, it will be removed.'" />
+			<filled>
+				<if cond="b4_add.response != true">
+					<clear namelist="document.sandwichName document.typeOfSandwich document.additions remove_ingredients extras combo" />
+					<var name="cartLen" expr="get_cart_length()" />
+					<if cond="cartLen > 0">
+						<goto nextitem = "final_check" />
+					<else/>
+						<goto next = "#food_menu" />
+					</if>
+				</if>
+		</filled>
+		</subdialog>
+		
 		<!-- Add the entire sandwich order to the array in javascript -->
-		<block>
+		<block name="add_to_cart">
 			<prompt>Added to cart. </prompt>
 			<var name="added" expr="addToCart(document.sandwichName+','+document.typeOfSandwich, document.additions, document.removals)"/>
 			<prompt>The price will be: <value expr="added" /> Egyptian pounds.</prompt>
