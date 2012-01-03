@@ -21,7 +21,7 @@
 				else if(this.name.indexOf('hot dog') != -1){
 					finalPrice = 6;
 				}
-				if(this.additions.split(" ").length-1 < 0){
+				if(this.additions.split(" ").length-1 < 0 || this.additions.indexOf('nothing') != -1){
 					num_additions = 0;
 				}
 				else{
@@ -48,7 +48,11 @@
 		}
 		
 		function getCart(){
-			return cart;
+			var totalOrder = "Your order consists of:";
+			for(var i in cart){
+				totalOrder += " A "+ cart[i].name.replace(",", " ") + "with " + cart[i].additions + "and " + cart[i].remove + " with price " + cart[i].price() + ",";
+			}
+			return totalOrder;
 		}
 		]]>
 	</script>
@@ -321,7 +325,6 @@
 			<prompt>Added to cart. </prompt>
 			<var name="added" expr="addToCart(document.sandwichName+','+document.typeOfSandwich, document.additions, document.removals)"/>
 			<prompt>The price will be: <value expr="added" /> Egyptian pounds.</prompt>
-			<prompt>Now add a new item. </prompt>
 			<clear namelist="document.sandwichName document.typeOfSandwich document.additions remove_ingredients extras combo" />
 			<goto nextitem="final_check" />
 		</block>
@@ -339,6 +342,10 @@
 		
 		<block name="final_price">
 			<var name="totalPrice" expr="orderPrice()" />
+			<var name="revise" expr="getCart()" />
+			<prompt>
+				<value expr="revise" />
+			</prompt>
 			<prompt>
 				The total price for your order will be <value expr="totalPrice" /> Egyptian Pounds. Your order should be delivered in 2 hours. Thank you for using Galal Aly. Bye bye.
 			</prompt>
