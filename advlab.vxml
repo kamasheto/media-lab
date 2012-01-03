@@ -5,6 +5,7 @@
 	<script>
 		<![CDATA[ 
 		cart = new Array();
+		// test
 		item_to_get = 0;
 		removed_sth = false;
 		function addToCart(name, additions, ingredients_to_remove){
