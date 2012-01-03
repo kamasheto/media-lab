@@ -152,8 +152,10 @@
   	
 	<!-- The customer is ordering a sandwich, we have to ask whether if he wants additions or stuff to be removed -->
 	<form id="sandwichForm" scope="dialog">
-		<assign name="document.additions" expr="' '" />
-		<assign name="document.removals" expr="' '" />
+		<block>
+			<assign name="document.additions" expr="'extra'" />
+			<assign name="document.removals" expr="'no'" />
+		</block>
 		
 		<!-- Does the user wants it a combo -->
 		<subdialog name="combo" src="subdialogs.vxml#r_u_sure">
@@ -271,7 +273,13 @@
 			<else/>
 				<assign name="document.typeOfSandwich" expr="'sandwich'" />
 			</if>
-			<prompt>This will be a <value expr="document.sandwichName"/> <value expr="document.typeOfSandwich"/> with extra <value expr="document.additions"/> and no <value expr="document.removals"/>. </prompt>
+			<if cond="document.additions == 'extra'">
+				<assign name="document.additions" expr="'nothing extra'" />
+			</if>
+			<if cond="document.removals == 'no'">
+				<assign name="document.removals" expr="'nothing removed'" />
+			</if>
+			<prompt>This will be a <value expr="document.sandwichName"/> <value expr="document.typeOfSandwich"/> with <value expr="document.additions"/> and <value expr="document.removals"/>. </prompt>
 		</block>
 		
 		<!-- Add the entire sandwich order to the array in javascript -->
