@@ -238,13 +238,17 @@
 		<field name="extras">
 			<prompt>Do you want any additions?</prompt>
 			<prompt> 
-				<enumerate>
-					To add <value expr="_prompt"/> press <value expr="_dtmf"/> or say <value expr="_prompt"/>, 
-				</enumerate>
+				<!-- <enumerate>
+									To add <value expr="_prompt"/> press <value expr="_dtmf"/> or say <value expr="_prompt"/>, 
+								</enumerate> -->
+				You can add onions, cheese, pickles or mushrooms by saying their names or pressing their numbers
 			</prompt>
 			<option value="onions" dtmf="1"> 
 		        onions
 		    </option> 
+			<option value="onion"> 
+		        onions
+		    </option>
 		    <option value="cheese" dtmf="2"> 
 		        cheese 
 		    </option> 
@@ -252,6 +256,9 @@
 		        pickles
 		    </option>
 			<option value="mushrooms" dtmf="4"> 
+		        mushrooms
+		    </option>
+			<option value="mushroom"> 
 		        mushrooms
 		    </option>
 		
@@ -286,13 +293,17 @@
 		<field name="remove_ingredients">
 			<prompt>Do you want to remove any of the ingredients?</prompt>
 			<prompt> 
-				<enumerate>
+				<!-- <enumerate>
 					To remove <value expr="_prompt"/> press <value expr="_dtmf"/> or say <value expr="_prompt"/>, 
-				</enumerate>
+				</enumerate> -->
+				You can remove onions, cheese, pickles or mushrooms by saying their names or pressing their numbers
 			</prompt>
 			<option value="onions" dtmf="1"> 
 		        onions
 		    </option> 
+			<option value="onion"> 
+		        onions
+		    </option>
 		    <option value="cheese" dtmf="2"> 
 		        cheese 
 		    </option> 
@@ -300,6 +311,9 @@
 		        pickles
 		    </option>
 			<option value="mushrooms" dtmf="4"> 
+		        mushrooms
+		    </option>
+			<option value="mushroom"> 
 		        mushrooms
 		    </option>
 
