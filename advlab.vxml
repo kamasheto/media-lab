@@ -5,6 +5,7 @@
 	<script>
 		<![CDATA[ 
 		cart = new Array();
+		// test
 		item_to_get = 0;
 		removed_sth = false;
 		function addToCart(name, additions, ingredients_to_remove){
@@ -104,87 +105,47 @@
 
 	<!-- Initially, we ask the user whether he would like to place a customer support ticket or to place a new order -->
 	<form id = "services_menu">
-		<field name = "service_choice">
-			<!-- Define our grammar -->
-		      <grammar type="text/gsl">
-		      <![CDATA[
-		        ;Match one of the enclosed terms
-		        [
-				dtmf-1 dtmf-2 dtmf-3 track order service (place an order) (make an order) (place a customer support ticket) (track your order)
-		        ]
-		      ]]>
-		      </grammar>
-			Hello and welcome to Burger King GUC Branch. Would you like to place an order, contact a service representative or track the progress of your order ?						
-		</field>
-		<filled namelist="service_choice">
-			<if cond="service_choice == 'order' || service_choice == 'place an order' || service_choice == 'make an order' || service_choice == '1'">
-				<goto next = '#food_menu'/>					
-			<elseif cond="service_choice == 'service' || service_choice == 'place a customer support ticket' || service_choice == '2'"/>
-				<goto next = '#supportForm'/>
-			<elseif cond="service_choice == 'track' || service_choice == 'track your order' || service_choice == '3'"/>
-				<goto next = '#trackForm'/>
-			<else/>
-				<throw event = "nomatch"/>
-				<reprompt/>
-			</if>
-		</filled>
+		<field modal="true" name="service_choice">
+	      <grammar src="http://localhost/advweb/grammar.php?g=home|mode=voice" type="application/srgs+xml" mode="voice"/>
+	      <grammar src="http://localhost/advweb/grammar.php?g=home|mode=dtmf" type="application/srgs+xml" mode="dtmf"/>
+	      <prompt>
+      		Hello and welcome to Burger King GUC Branch. If you'd like to place an order, say order or press 1, if you'd like to contact a service representative, say service or press 2, if you'd like to track your order, say track or press 3.
+	      </prompt>
+	      <filled>
+	        <goto expr="lastresult$.interpretation.next"/>
+	      </filled>
+	    </field>
 	</form>
 	
 	<!-- In case of track form, get number of tracking order, then say the result -->
-	<form id = "trackForm">
-		<field name = "track_choice">
-			<!-- Define our grammar -->
-		      <grammar type="text/gsl">
-		      <![CDATA[
-		        ;Match one of the enclosed terms
-		        [
-				(dtmf-1 dtmf-5 dtmf-2 dtmf-1 dtmf-8) (one five two one eight) (dtmf-3 dtmf-7 dtmf-1 dtmf-6 dtmf-9) (three seven one six nine) (dtmf-2 dtmf-5 dtmf-3 dtmf-8 dtmf-9) (two five three eight nine)
-		        ]
-		      ]]>
-		      </grammar>
-			Please enter your 5 digit tracking order.						
-		</field>
-		<filled namelist="track_choice">
-			<if cond="track_choice == 'one five two one eight' || track_choice == '15218'">
-				<prompt> Your order is on route, ETA is 15 mins </prompt>
-				<prompt>.</prompt>
-				<goto next = '#services_menu'/>					
-			<elseif cond="track_choice == 'three seven one six nine' || track_choice == '37169'"/>
-				<prompt> Your order will be on route in 5 mins </prompt>
-				<prompt>.</prompt>				
-				<goto next = '#services_menu'/>
-			<elseif cond="track_choice == 'two five three eight nine' || track_choice == '25389'"/>
-				<prompt> Your order should be delivered by now, redirecting you to a customer service representative </prompt>
-				<prompt>.</prompt>				
-				<goto next = '#supportForm'/>
-			<else/>
-				<throw event = "nomatch"/>
-				<reprompt/>
-			</if>
-		</filled>
+	<form id="trackForm">
+		<field modal="true" name="track_choice">
+	      <grammar src="http://localhost/advweb/grammar.php?g=track|mode=voice" type="application/srgs+xml" mode="voice"/>
+	      <grammar src="http://localhost/advweb/grammar.php?g=track|mode=dtmf" type="application/srgs+xml" mode="dtmf"/>
+	      <prompt>
+	      	Please enter your 5 digit tracking order.
+	      </prompt>
+	      <filled>
+	      	<audio>Your order is <value expr="lastresult$.interpretation.tracking_message" /></audio>
+	        <goto next='#services_menu' />
+	      </filled>
+	    </field>
 	</form>
 	
+
 	<!-- In case of support form, record what the user is saying -->
 	<form id = "supportForm">
 	  <record name="R_1" beep="true" dtmfterm="true"> 
 	    <prompt> 
-	      Please start recording your complain after the beep. 
-	    </prompt> 
-	    <prompt> 
-	      after you are finished, you may press any key to indicate that you are done recording. 
-	    </prompt> 
-
+	      Please start recording your complain after the beep. After you are finished, you may press any key to indicate that you are done recording. 
+	    </prompt>
 	    <filled> 
 	      <log expr="R_1$.duration"/> 
 	      <log expr="R_1$.termchar"/> 
 	      <log expr="R_1$.size"/> 
-
-	      <prompt> your recording was <value expr="R_1"/> </prompt> 
-		  <prompt> One of our customer care representative will contact you shortly, Thank you</prompt>
-	    </filled> 
-
-	  </record> 
-	  
+	      <prompt>Your recording was <value expr="R_1"/> One of our customer care representative will contact you shortly, Thank you</prompt>
+	    </filled>
+	  </record>
 	</form>
 	
 	<!-- In case of food ordering, What does the user want? This is like food category -->
@@ -199,7 +160,7 @@
 		        ]
 		      ]]>
 		      </grammar>
-			To order a sandwich say sandwich or press 1, to order a salad, say salad or press 2, to order a side item, say side item or press 3						
+			To order a sandwich say sandwich or press 1
 		</field>
 		<filled namelist="food_choice">
 			<if cond="food_choice == 'sandwich' || food_choice == 'order a sandwich' || food_choice == '1'">
@@ -223,7 +184,7 @@
 		        ]
 		      ]]>
 		      </grammar>
-			Which sandwich do you want ? There is cheese burger, chicken panee and hot dog.
+			Which sandwich do you want ? You can have a cheese burger by saying cheese burger or pressing 1, a chicken panee by saying chicken panee or pressing 2, a hot dog by saying hot dog or pressing 3.
 		</field>
 		<filled namelist="sandwiches_choice">
 			<if cond="sandwiches_choice == 'cheese burger' || sandwiches_choice == 'order a cheese burger' || sandwiches_choice == '1'">
@@ -273,14 +234,11 @@
 				<!-- <enumerate>
 									To add <value expr="_prompt"/> press <value expr="_dtmf"/> or say <value expr="_prompt"/>, 
 								</enumerate> -->
-				You can add onions, cheese, pickles or mushrooms by saying their names or pressing their numbers
+				You can add onions, cheese, pickles or mushrooms by saying their names or pressing the numbers from 1 to 4
 			</prompt>
 			<option value="onions" dtmf="1"> 
 		        onions
 		    </option> 
-			<option value="onion"> 
-		        onions
-		    </option>
 		    <option value="cheese" dtmf="2"> 
 		        cheese 
 		    </option> 
@@ -290,14 +248,9 @@
 			<option value="mushrooms" dtmf="4"> 
 		        mushrooms
 		    </option>
-			<option value="mushroom"> 
-		        mushrooms
-		    </option>
-		
 			<option value="n" dtmf="5">
 				nothing more
 			</option>
-			
 			<filled>
 				<if cond="extras == 'n'">
 					<goto nextitem="remove_ingredients" />
@@ -328,14 +281,11 @@
 				<!-- <enumerate>
 					To remove <value expr="_prompt"/> press <value expr="_dtmf"/> or say <value expr="_prompt"/>, 
 				</enumerate> -->
-				You can remove onions, cheese, pickles or mushrooms by saying their names or pressing their numbers
+				You can remove onions, cheese, pickles or mushrooms by saying their names or pressing the numbers from 1 to 4
 			</prompt>
 			<option value="onions" dtmf="1"> 
 		        onions
 		    </option> 
-			<option value="onion"> 
-		        onions
-		    </option>
 		    <option value="cheese" dtmf="2"> 
 		        cheese 
 		    </option> 
@@ -343,9 +293,6 @@
 		        pickles
 		    </option>
 			<option value="mushrooms" dtmf="4"> 
-		        mushrooms
-		    </option>
-			<option value="mushroom"> 
 		        mushrooms
 		    </option>
 

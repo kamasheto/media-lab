@@ -4,7 +4,6 @@
 
 <meta name="author" content="Matthew Henry"/> 
 <meta name="copyright" content="2005 voxeo corporation"/> 
-<meta name="maintainer" content="YOUR_EMAIL@HERE.COM"/> 
 
 <form id="r_u_sure"> 
   <var name="confirm_prompt"/> 
